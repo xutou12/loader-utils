@@ -13,6 +13,9 @@ ExpectedError.prototype.matches = function(err) {
 describe("urlToRequest()", () => {
 	[
 		// without root
+		[["//google.com"], "//google.com", "should handle scheme-agnostic urls"],
+		[["http://google.com"], "http://google.com", "should handle http urls"],
+		[["https://google.com"], "https://google.com", "should handle https urls"],
 		[["path/to/thing"], "./path/to/thing", "should handle implicit relative urls"],
 		[["./path/to/thing"], "./path/to/thing", "should handle explicit relative urls"],
 		[["~path/to/thing"], "path/to/thing", "should handle module urls (with ~)"],
@@ -35,7 +38,9 @@ describe("urlToRequest()", () => {
 		// error cases
 		[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"],
 		// difficult cases
-		[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"]
+		[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"],
+		// empty url
+		[[""], "", "should do nothing if url is empty"]
 	].forEach((test) => {
 		it(test[2], () => {
 			const expected = test[1];
